@@ -23,10 +23,19 @@ export default function Home() {
   const [singleId, setSingleId] = useState("")
   const [isRefreshing, setIsRefreshing] = useState(false)
 
-  // Fetch latest schedule data on mount
-  useEffect(() => {
-    refreshScheduleData()
-  }, [])
+  // Function to update current data with latest schedule
+  const updateCurrentData = useCallback(async (id: string) => {
+    if (!id) return
+    try {
+      // Fetch application data with latest schedule
+      const appData = await fetchApplicationById(id)
+      if (appData) {
+        setProcessedData(appData)
+      }
+    } catch (error) {
+      console.error("Error updating current data:", error)
+    }
+  }, []) // No dependencies needed as it only uses external functions
 
   // Function to refresh schedule data
   const refreshScheduleData = useCallback(async () => {
@@ -40,29 +49,20 @@ export default function Home() {
       await fetchLatestScheduleData()
       
       // If we have current data, update it with the new schedule
-      if (processedData && processedData.id) {
-        await updateCurrentData(processedData.id.toString())
+      if (processedData?.id) {
+        await updateCurrentData(processedData.id)
       }
     } catch (error) {
       console.error("Failed to refresh schedule data:", error)
     } finally {
       setIsRefreshing(false)
     }
-  }, [processedData])
+  }, [processedData?.id, updateCurrentData]) // Only depend on what we actually use
 
-  // Function to update current data with latest schedule
-  const updateCurrentData = useCallback(async (id: string) => {
-    if (!id) return
-    try {
-      // Fetch application data with latest schedule
-      const appData = await fetchApplicationById(id)
-      if (appData) {
-        setProcessedData(appData)
-      }
-    } catch (error) {
-      console.error("Error updating current data:", error)
-    }
-  }, [])
+  // Fetch latest schedule data on mount
+  useEffect(() => {
+    void refreshScheduleData()
+  }, [refreshScheduleData])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

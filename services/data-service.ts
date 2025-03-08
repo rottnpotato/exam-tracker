@@ -1,11 +1,26 @@
 import type { ProcessedData, RejectedData } from "@/types"
-// Removing static import
-// import scheduleData from "@/app/data/schedule-data.json"
 import { getExamStatus, getDateStatus, extractPostponedDate } from "@/utils/date-utils"
 import { searchVenue } from "./venue-service"
 
+interface ScheduleItem {
+  "Application ID": string | number
+  Date: string
+  Time: string
+  Course: string
+  Postponed?: string
+}
+
+interface ApplicationData {
+  id: number
+  first_name: string
+  last_name: string
+  coursecode?: string
+  exam_venue?: string
+  // Add other application data fields as needed
+}
+
 // Cache for schedule data to avoid excessive API calls
-let cachedScheduleData: any[] | null = null;
+let cachedScheduleData: ScheduleItem[] | null = null;
 let lastFetchTime: number = 0;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
 
@@ -74,7 +89,7 @@ export async function fetchRejectedApplicationById(id: string): Promise<Rejected
  * Gets the latest schedule data with caching
  * @returns Promise with the latest schedule data
  */
-async function getScheduleData(): Promise<any[]> {
+async function getScheduleData(): Promise<ScheduleItem[]> {
   const now = Date.now()
   
   // Return cached data if it's still valid
@@ -89,7 +104,6 @@ async function getScheduleData(): Promise<any[]> {
     lastFetchTime = now
     console.log("Fetched latest schedule data:", data)
     return data
-    console.log("Fetched latest schedule data")
   } catch (error) {
     // If fetch fails and we have cached data, return that as fallback
     if (cachedScheduleData) {
@@ -126,15 +140,21 @@ export async function fetchLatestScheduleData() {
  * @param scheduleData Dynamic schedule data from Google Sheets
  * @returns Processed application data
  */
-export function processApplicationData(data: any, id: string, scheduleData: any[]): ProcessedData {
+export function processApplicationData(
+  data: ApplicationData, 
+  id: string, 
+  scheduleData: ScheduleItem[]
+): ProcessedData {
   // Find the schedule from the dynamic data
   const schedule = scheduleData.find((s) => s["Application ID"].toString() === id)
   
-  // Check if postponed
-  const hasPostponedInfo = schedule?.Postponed && schedule.Postponed.trim() !== ""
+  // Check if postponed - ensure boolean result
+  const hasPostponedInfo = Boolean(schedule?.Postponed && schedule.Postponed.trim() !== "")
   
   // Extract postponed date if available
-  const postponedDate = hasPostponedInfo ? extractPostponedDate(schedule?.Postponed) : undefined
+  const postponedDate = hasPostponedInfo && schedule?.Postponed ? 
+    extractPostponedDate(schedule.Postponed) : 
+    undefined
   
   // Get date and time
   const examDate = schedule?.Date || "N/A"
@@ -150,11 +170,12 @@ export function processApplicationData(data: any, id: string, scheduleData: any[
     date: examDate,
     time: examTime,
     course: schedule?.Course || data.coursecode || "N/A",
-    remarks: hasPostponedInfo ? schedule?.Postponed : "N/A",
+    remarks: hasPostponedInfo && schedule?.Postponed ? schedule.Postponed : "N/A",
     isPostponed: hasPostponedInfo,
     postponedDate,
     isToday,
     dateStatus: "upcoming", // Default value, will be updated below
+    exam_venue: data.exam_venue || "N/A" // Ensure exam_venue always has a value
   }
   
   // Add date status
