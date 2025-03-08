@@ -7,12 +7,10 @@ import type { ProcessedData, RejectedData } from "@/types"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle, RefreshCw } from "lucide-react"
+import { AlertCircle } from "lucide-react"
 import { 
   fetchApplicationById, 
-  fetchRejectedApplicationById, 
-  fetchLatestScheduleData,
-  clearScheduleCache 
+  fetchRejectedApplicationById 
 } from "@/services/data-service"
 
 const SearchBar = ({ 
@@ -61,7 +59,7 @@ const SearchBar = ({
   return (
     <form 
       onSubmit={handleSubmit} 
-      className="flex flex-col w-full max-w-xl"
+      className="flex flex-col w-full max-w-3xl px-4"
       role="search"
       aria-label="Application search"
     >
@@ -69,7 +67,7 @@ const SearchBar = ({
         <label htmlFor="application-id" className="sr-only">
           Application ID
         </label>
-        <div className="flex flex-col sm:flex-row gap-2">
+        <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-grow">
             <Input
               id="application-id"
@@ -78,7 +76,7 @@ const SearchBar = ({
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               placeholder="Enter Application ID"
-              className={`w-full ${inputError ? 'border-red-500' : ''}`}
+              className={`w-full h-14 text-xl ${inputError ? 'border-red-500' : ''}`}
               disabled={isLoading}
               aria-label="Enter your application ID"
               aria-describedby={inputError ? "input-error" : "search-description"}
@@ -87,7 +85,7 @@ const SearchBar = ({
             {inputError && (
               <p 
                 id="input-error" 
-                className="text-sm text-red-500 mt-1"
+                className="text-sm text-red-500 mt-2"
                 role="alert"
               >
                 {inputError}
@@ -97,7 +95,7 @@ const SearchBar = ({
           <Button 
             type="submit" 
             disabled={isLoading} 
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto h-14 px-10 text-lg font-medium"
             aria-live="polite"
           >
             {isLoading ? "Searching..." : "Search"}
@@ -110,29 +108,6 @@ const SearchBar = ({
     </form>
   )
 }
-
-const RefreshButton = ({
-  onClick,
-  isRefreshing
-}: {
-  onClick: () => Promise<void>
-  isRefreshing: boolean
-}) => (
-  <Button
-    variant="outline"
-    size="sm"
-    onClick={onClick}
-    disabled={isRefreshing}
-    className="flex items-center gap-1"
-    aria-label={isRefreshing ? "Refreshing data..." : "Refresh data"}
-  >
-    <RefreshCw 
-      className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} 
-      aria-hidden="true"
-    />
-    {isRefreshing ? "Refreshing..." : "Refresh Data"}
-  </Button>
-)
 
 const ErrorAlert = ({ message }: { message: string }) => (
   <Alert 
@@ -162,9 +137,7 @@ const LoadingSpinner = () => (
 )
 
 export default function Home() {
-  const [singleId, setSingleId] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [isRefreshing, setIsRefreshing] = useState(false)
   const [error, setError] = useState("")
   const [processedData, setProcessedData] = useState<ProcessedData | null>(null)
   const [rejectedData, setRejectedData] = useState<RejectedData | null>(null)
@@ -174,7 +147,6 @@ export default function Home() {
     setError("")
     setProcessedData(null)
     setRejectedData(null)
-    setSingleId(id)
 
     try {
       const [appData, rejData] = await Promise.all([
@@ -201,36 +173,15 @@ export default function Home() {
     }
   }
 
-  const refreshScheduleData = async () => {
-    setIsRefreshing(true)
-    try {
-      await clearScheduleCache()
-      if (singleId) {
-        const data = await fetchLatestScheduleData() // Remove singleId parameter
-        if (data) {
-          setProcessedData(data)
-        }
-      }
-    } catch (err) {
-      console.error("Error refreshing data:", err)
-      setError("Failed to refresh data. Please try again.")
-    } finally {
-      setIsRefreshing(false)
-    }
-  }
-
   return (
     <main 
-      className="flex flex-col items-center gap-4 sm:gap-6"
+      className={`flex flex-col items-center ${!processedData && !rejectedData ? 'justify-center -mt-20' : 'justify-start pt-16'} min-h-[calc(100vh-144px)] gap-6 sm:gap-8 py-8`}
       role="main"
       aria-label="Exam Schedule Tracker"
     >
-      <div className="w-full max-w-3xl space-y-3 sm:space-y-4">
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
+      <div className="w-full max-w-3xl space-y-6 sm:space-y-8">
+        <div className="flex justify-center w-full">
           <SearchBar onSubmit={handleSearch} isLoading={isLoading} />
-          {processedData && (
-            <RefreshButton onClick={refreshScheduleData} isRefreshing={isRefreshing} />
-          )}
         </div>
 
         {error && <ErrorAlert message={error} />}

@@ -92,6 +92,8 @@ const ApplicantInfo = ({ data }: InfoCardProps) => (
 
 // Venue Information Component
 const VenueInfo = ({ venue, hasLocation, onViewMap }: VenueInfoProps) => {
+  if (!venue) return null;
+  
   // Split the venue name at the dash for a natural two-line display
   const parts = venue.split(' - ');
   const firstLine = parts[0];

@@ -65,7 +65,9 @@ const venueDatabase: VenueLocation[] = [
 ]
 
 // Helper function to normalize venue names for comparison
-function normalizeVenueName(name: string): string {
+function normalizeVenueName(name: string | undefined): string {
+  if (!name) return '';
+  
   return name
     .replace(/\s+/g, "") // Remove all spaces
     .replace(/[-,]/g, "") // Remove hyphens and commas

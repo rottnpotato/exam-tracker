@@ -1,9 +1,9 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
-import { Inter } from 'next/font/google'
+import { Figtree } from 'next/font/google'
 import "./globals.css"
 
-const inter = Inter({ subsets: ["latin"] })
+const figtree = Figtree({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Exam Schedule Tracker",
@@ -26,10 +26,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
-      <body className={`${inter.className} flex flex-col min-h-screen`}>
-        <header className="bg-primary text-primary-foreground py-4">
+      <body className={`${figtree.className} flex flex-col min-h-screen`}>
+      <header className="text-primary-foreground py-6 mt-4 sm:mt-6 md:mt-8">
+
           <div className="container mx-auto px-2 sm:px-4">
-            <h1 className="text-xl sm:text-2xl font-bold text-center">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-black">
               Exam Schedule Tracker
             </h1>
           </div>
