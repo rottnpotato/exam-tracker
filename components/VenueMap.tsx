@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { ExternalLink, MapPin, Navigation } from "lucide-react"
+import { ExternalLink, MapPin, Navigation, AlertTriangle } from "lucide-react"
 import { getGoogleMapsUrl, getDirectionsUrl } from "@/services/venue-service"
 import type { VenueLocation } from "@/types"
 
@@ -18,6 +18,8 @@ export default function VenueMap({ venueName, coordinates, isOpen, onClose }: Ve
   const [mapUrl, setMapUrl] = useState<string>("")
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>("")
+  const [requestCount, setRequestCount] = useState<number>(0)
+  const [limitReached, setLimitReached] = useState<boolean>(false)
 
   // Fetch the map URL from our API when the component mounts or when coordinates change
   useEffect(() => {
@@ -32,10 +34,16 @@ export default function VenueMap({ venueName, coordinates, isOpen, onClose }: Ve
           const data = await response.json()
           
           if (!response.ok) {
+            if (response.status === 429 && data.limitReached) {
+              setLimitReached(true)
+              setRequestCount(data.requestCount)
+            }
             throw new Error(data.error || 'Failed to load map')
           }
           
           setMapUrl(data.mapUrl)
+          setRequestCount(data.requestCount)
+          setLimitReached(false)
         } catch (err) {
           setError(err instanceof Error ? err.message : 'Failed to load map')
         } finally {
@@ -74,9 +82,18 @@ export default function VenueMap({ venueName, coordinates, isOpen, onClose }: Ve
               <div className="flex items-center justify-center h-full">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
               </div>
-            ) : error ? (
-              <div className="flex items-center justify-center h-full text-red-500">
-                {error}
+            ) : error || limitReached ? (
+              <div className="flex flex-col items-center justify-center h-full text-red-500 gap-2">
+                <AlertTriangle className="h-8 w-8" />
+                <p>{error}</p>
+                {limitReached && (
+                  <div className="text-center">
+                    <p className="font-semibold">API Request Limit Near</p>
+                    <p className="text-sm text-gray-600">Current request count: {requestCount}/10000</p>
+                    <p className="text-sm text-gray-600">Counter will reset at midnight</p>
+                    <p className="text-sm text-gray-600 mt-2">Please use the external map links below</p>
+                  </div>
+                )}
               </div>
             ) : (
               <iframe
@@ -113,6 +130,12 @@ export default function VenueMap({ venueName, coordinates, isOpen, onClose }: Ve
               Get Directions
             </Button>
           </div>
+
+          {!limitReached && !error && !isLoading && (
+            <div className="text-xs text-gray-500 text-right">
+              API Requests: {requestCount}/10000 (Resets at midnight)
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
