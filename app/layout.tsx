@@ -63,7 +63,8 @@ export default function RootLayout({
           </main>
           <footer className="bg-primary text-primary-foreground p-4">
             <div className="container mx-auto px-2 sm:px-4">
-              <p className="text-center text-sm">&copy; 2025 Bohol Island State University</p>
+              <p className="text-center text-sm">&copy; Bohol Island State University</p>
+              <p className="text-center text-[10px] mt-1 opacity-70">rottnpotato</p>
             </div>
           </footer>
         </ThemeProvider>
