@@ -272,7 +272,7 @@ export default function ResultCards({ data }: ResultCardsProps) {
         style={{ maxWidth: "100%" }}
       >
         <CardHeader 
-  className={`p-3 sm:p-6 pb-2 ${StatusIndicator.getHeaderBackground(data.status)} dark:bg-opacity-20 dark:text-white`}
+  className={`p-3 sm:p-6 pb-2 ${StatusIndicator.getHeaderBackground(data.status)} dark:bg-opacity-0 dark:text-white`}
 >
   <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full">
     <CardTitle className="text-base sm:text-lg md:text-xl dark:text-white">Exam Information</CardTitle>
