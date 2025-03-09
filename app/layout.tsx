@@ -8,9 +8,9 @@ import { ThemeToggle } from "@/components/ui/theme-toggle"
 const figtree = Figtree({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Exam Schedule Tracker",
+  title: "BISU-CAT Exam Schedule Tracker",
   description: "Track application status and exam schedules",
-  keywords: "exam schedule, application tracking, exam venue",
+  keywords: "exam schedule, application tracking, exam venue, bisu",
 }
 
 export const viewport: Viewport = {
@@ -41,19 +41,29 @@ export default function RootLayout({
             <ThemeToggle />
           </div>
           
-          <header className="text-primary-foreground py-6 relative">
-            <div className="container mx-auto px-2 sm:px-4">
+          <header className="text-primary-foreground py-6 mt-8 sm:mt-10 md:mt-12">
+            <div className="container mx-auto px-4 sm:px-6">
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-foreground">
-                Exam Schedule Tracker
+                BISU-CAT Exam Schedule Tracker
               </h1>
+              <div className="mt-6 sm:mt-20">
+                <div className="text-muted-foreground text-center max-w-2xl mx-auto">
+                  <p className="font-semibold text-base sm:text-lg mb-2 text-foreground">
+                    Examination schedules are assigned only to approved applications.
+                  </p>
+                  <p className="text-sm sm:text-base">
+                    Enter your Application ID to view your exam date, time, and venue.
+                  </p>
+                </div>
+              </div>
             </div>
           </header>
-          <main className="container mx-auto px-2 sm:px-4 py-6 flex-grow">
+          <main className="container mx-auto px-4 sm:px-6 flex-grow overflow-x-hidden">
             {children}
           </main>
           <footer className="bg-primary text-primary-foreground p-4">
             <div className="container mx-auto px-2 sm:px-4">
-              <p className="text-center text-sm">&copy; 2025 rottnpotato</p>
+              <p className="text-center text-sm">&copy; 2025 Bohol Island State University</p>
             </div>
           </footer>
         </ThemeProvider>

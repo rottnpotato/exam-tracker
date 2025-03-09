@@ -59,11 +59,11 @@ const SearchBar = ({
   return (
     <form 
       onSubmit={handleSubmit} 
-      className="flex flex-col w-full max-w-3xl px-4"
+      className="flex flex-col w-full max-w-3xl"
       role="search"
       aria-label="Application search"
     >
-      <div className="flex-grow">
+      <div className="flex-grow space-y-4">
         <label htmlFor="application-id" className="sr-only">
           Application ID
         </label>
@@ -76,7 +76,7 @@ const SearchBar = ({
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               placeholder="Enter Application ID"
-              className={`w-full h-14 text-xl ${inputError ? 'border-red-500' : ''}`}
+              className={`w-full h-14 text-lg md:text-xl shadow-sm ${inputError ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
               disabled={isLoading}
               aria-label="Enter your application ID"
               aria-describedby={inputError ? "input-error" : "search-description"}
@@ -85,7 +85,7 @@ const SearchBar = ({
             {inputError && (
               <p 
                 id="input-error" 
-                className="text-sm text-red-500 mt-2"
+                className="text-sm text-red-500 mt-2 font-medium"
                 role="alert"
               >
                 {inputError}
@@ -94,11 +94,12 @@ const SearchBar = ({
           </div>
           <Button 
             type="submit" 
-            disabled={isLoading} 
-            className="w-full sm:w-auto h-14 px-10 text-lg font-medium"
+            disabled={isLoading}
+            size="lg"
+            className="w-full sm:w-auto h-14 px-8 text-base sm:text-lg font-medium min-w-[160px]"
             aria-live="polite"
           >
-            {isLoading ? "Searching..." : "Search"}
+            {isLoading ? "Tracking..." : "Track Schedule"}
           </Button>
         </div>
         <span id="search-description" className="sr-only">
@@ -175,17 +176,17 @@ export default function Home() {
 
   return (
     <main 
-      className={`flex flex-col items-center ${!processedData && !rejectedData ? 'justify-center -mt-20' : 'justify-start pt-16'} min-h-[calc(100vh-144px)] gap-6 sm:gap-8 py-8`}
+      className="flex flex-col items-center justify-start min-h-[calc(100vh-320px)] gap-6 sm:gap-8 pb-8"
       role="main"
-      aria-label="Exam Schedule Tracker"
+      aria-label="BISU-CAT Exam Schedule Tracker"
     >
-      <div className="w-full max-w-3xl space-y-6 sm:space-y-8">
+      <div className="w-full max-w-3xl">
         <div className="flex justify-center w-full">
           <SearchBar onSubmit={handleSearch} isLoading={isLoading} />
         </div>
-
-        {error && <ErrorAlert message={error} />}
         {isLoading && <LoadingSpinner />}
+        {error && <ErrorAlert message={error} />}
+       
       </div>
 
       {processedData && <ResultCards data={processedData} />}

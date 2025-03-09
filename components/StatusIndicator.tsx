@@ -75,7 +75,7 @@ const StatusIndicator = {
         return "bg-amber-50"
       case "upcoming":
       default:
-        return "bg-green-50"
+        return "bg-orange-50"
     }
   },
 
