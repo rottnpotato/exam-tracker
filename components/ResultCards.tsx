@@ -142,13 +142,19 @@ const ScheduleInfo = ({ date, time, status, isPostponed }: ScheduleInfoProps) =>
   
   // Improved background color handling for dark mode
   let bgColor = ""
+  let textColor = ""
   if (isPostponed) {
     bgColor = "bg-amber-50 dark:bg-amber-950/30"
+    textColor = "dark:text-white"
   } else {
     // Extract the color from className (e.g., "text-green-600" -> "green")
     const colorMatch = className.match(/text-([a-z]+)-\d+/)
     const color = colorMatch ? colorMatch[1] : "gray"
     bgColor = `bg-${color}-50 dark:bg-${color}-900/20`
+    textColor = `dark:text-black`
+  }
+  if(status ==="upcoming"){
+    textColor = "dark:text-white"
   }
   
   // Always use black text for the header
@@ -163,8 +169,8 @@ const ScheduleInfo = ({ date, time, status, isPostponed }: ScheduleInfoProps) =>
       aria-label={scheduleType}
     >
       <div className="flex items-center gap-2 mb-2">
-        <Calendar className={`h-4 w-4 sm:h-5 sm:w-5 text-black dark:text-black flex-shrink-0`} aria-hidden="true" />
-        <h4 className={`text-sm font-medium text-black dark:text-black`}>
+        <Calendar className={`h-4 w-4 sm:h-5 sm:w-5 text-black ${textColor} flex-shrink-0`} aria-hidden="true" />
+        <h4 className={`text-sm font-medium text-black ${textColor}`}>
           {scheduleType}
           {status === "today-past" && " (Missed)"}
         </h4>
@@ -173,7 +179,7 @@ const ScheduleInfo = ({ date, time, status, isPostponed }: ScheduleInfoProps) =>
         <div className="flex flex-col gap-1 w-full overflow-hidden" aria-label="Exam date">
           <div className="flex items-center gap-2 w-full">
             <CalendarDays className="h-4 w-4 text-gray-500 dark:text-gray-500 flex-shrink-0" aria-hidden="true" />
-            <p className={`text-sm sm:text-base ${isPast || isPostponed ? "line-through text-gray-500 dark:text-gray-500" : "font-medium text-black dark:text-black"} break-words w-[calc(100%-24px)] overflow-hidden`}>
+            <p className={`text-sm sm:text-base ${isPast || isPostponed ? "line-through text-gray-500 dark:text-gray-500" : `font-medium text-black ${textColor}`} break-words w-[calc(100%-24px)] overflow-hidden`}>
               {formatDateForDisplay(date)}
             </p>
           </div>
@@ -185,7 +191,7 @@ const ScheduleInfo = ({ date, time, status, isPostponed }: ScheduleInfoProps) =>
           <div className="flex flex-col gap-1 w-full overflow-hidden" aria-label="Exam time">
             <div className="flex items-center gap-2 w-full">
               <Clock className="h-4 w-4 text-gray-500 dark:text-gray-500 flex-shrink-0" aria-hidden="true" />
-              <p className={`text-sm sm:text-base ${isPast || isPostponed ? "line-through text-gray-500 dark:text-gray-500" : "font-medium text-black dark:text-black"} break-words w-[calc(100%-24px)] overflow-hidden`}>
+              <p className={`text-sm sm:text-base ${isPast || isPostponed ? "line-through text-gray-500 dark:text-gray-500" : `font-medium text-black ${textColor}`} break-words w-[calc(100%-24px)] overflow-hidden`}>
                 {time}
               </p>
             </div>
@@ -247,7 +253,7 @@ const StatusSummary = ({ status, isToday }: StatusSummaryProps) => {
         <span className={`flex-shrink-0 mt-0.5 sm:mt-1 text-${baseColor}-600 dark:text-${baseColor}-400`}>
           {icon}
         </span>
-        <p className={`text-sm sm:text-base font-medium break-words w-[calc(100%-24px)] overflow-hidden text-${baseColor}-700 dark:text-${baseColor}-300`}>
+        <p className={`text-sm sm:text-base font-medium break-words w-[calc(100%-24px)] overflow-hidden text-${baseColor}-700 dark:text-${baseColor}-700`}>
           {message}
         </p>
       </div>
