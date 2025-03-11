@@ -41,12 +41,15 @@ export default function RootLayout({
             <ThemeToggle />
           </div>
           
-          <header className="text-primary-foreground py-6 mt-8 sm:mt-10 md:mt-12">
+          <header className="text-primary-foreground py-6 mt-4 sm:mt-4 md:mt-6">
             <div className="container mx-auto px-4 sm:px-6">
+              <div className="flex justify-center mb-6">
+                <img src="/LOGO_BISU.svg" alt="BISU Logo" className="w-32 h-32" />
+              </div>
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-foreground">
                 BISU-CAT Exam Schedule Tracker
               </h1>
-              <div className="mt-6 sm:mt-20">
+              <div className="mt-6 sm:mt-15">
                 <div className="text-muted-foreground text-center max-w-2xl mx-auto">
                   <p className="font-semibold text-base sm:text-lg mb-2 text-foreground">
                     Examination schedules are assigned only to approved applications.
