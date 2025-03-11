@@ -4,6 +4,7 @@ import { Figtree } from 'next/font/google'
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
+import { Analytics } from "@vercel/analytics/react"
 
 const figtree = Figtree({ subsets: ["latin"] })
 
@@ -63,6 +64,7 @@ export default function RootLayout({
           </header>
           <main className="container mx-auto px-4 sm:px-6 flex-grow overflow-x-hidden">
             {children}
+            <Analytics />
           </main>
           <footer className="bg-primary text-primary-foreground p-4">
             <div className="container mx-auto px-2 sm:px-4">
